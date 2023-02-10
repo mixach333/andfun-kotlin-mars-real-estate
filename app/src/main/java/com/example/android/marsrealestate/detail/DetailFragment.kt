@@ -25,13 +25,24 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.android.marsrealestate.databinding.FragmentDetailBinding
 
 class DetailFragment : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    private var _binding : FragmentDetailBinding? = null
+    private val binding get() = requireNotNull(_binding)
 
-        @Suppress("UNUSED_VARIABLE")
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+
         val application = requireNotNull(activity).application
-        val binding = FragmentDetailBinding.inflate(inflater)
+        _binding = FragmentDetailBinding.inflate(inflater)
         binding.lifecycleOwner = this
+        val marsProperty = DetailFragmentArgs.fromBundle(requireArguments()).marsProperty
+        val viewModelFactory = DetailViewModelFactory(marsProperty, application)
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
+        binding.viewModel = viewModel
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

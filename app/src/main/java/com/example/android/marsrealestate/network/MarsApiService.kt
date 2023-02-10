@@ -25,12 +25,12 @@ import retrofit2.http.GET
 
 private const val BASE_URL = "https://mars.udacity.com/"
 private val moshi = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
-        .build()
+    .add(KotlinJsonAdapterFactory())
+    .build()
 private val retrofit = Retrofit.Builder()
-        .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .baseUrl(BASE_URL)
-        .build()
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .baseUrl(BASE_URL)
+    .build()
 
 interface MarsApiService {
 
@@ -38,8 +38,12 @@ interface MarsApiService {
     suspend fun getProperties(): List<MarsProperty>
 }
 
-object MarsApi{
-    val retrofitService : MarsApiService by lazy { retrofit.create(MarsApiService::class.java) }
+object MarsApi {
+    val retrofitService: MarsApiService by lazy { retrofit.create(MarsApiService::class.java) }
 }
 
-enum class MarsApiStatus {LOADING, ERROR, DONE}
+enum class MarsApiStatus { LOADING, ERROR, DONE }
+enum class RentOrBuyType(type: String) {
+    Rent("rent"),
+    Buy("buy")
+}
