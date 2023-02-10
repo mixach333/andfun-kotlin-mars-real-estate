@@ -22,8 +22,6 @@ import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.network.MarsProperty
 
 class DetailViewModel(marsProperty: MarsProperty, app: Application) : AndroidViewModel(app) {
-    private val _onOverviewNavigated = MutableLiveData<Boolean>()
-    val onOverviewNavigated get() = _onOverviewNavigated
 
     private val _selectedProperty = MutableLiveData<MarsProperty>()
     val selectedProperty: LiveData<MarsProperty> get() = _selectedProperty
@@ -32,7 +30,7 @@ class DetailViewModel(marsProperty: MarsProperty, app: Application) : AndroidVie
         _selectedProperty.value = marsProperty
     }
 
-    val displayPropertyType = Transformations.map(selectedProperty) {
+    val displayPropertyType: LiveData<String> = Transformations.map(selectedProperty) {
         app.applicationContext.getString(
             R.string.display_type, app.applicationContext.getString(
                 when (it.isRental) {
@@ -43,7 +41,7 @@ class DetailViewModel(marsProperty: MarsProperty, app: Application) : AndroidVie
         )
     }
 
-    val displayPropertyPrice = Transformations.map(selectedProperty) {
+    val displayPropertyPrice: LiveData<String> = Transformations.map(selectedProperty) {
         app.applicationContext.getString(
             when (it.isRental) {
                 true -> R.string.display_price_monthly_rental

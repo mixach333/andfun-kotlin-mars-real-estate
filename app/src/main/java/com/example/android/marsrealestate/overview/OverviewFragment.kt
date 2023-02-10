@@ -19,14 +19,13 @@ package com.example.android.marsrealestate.overview
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.databinding.FragmentOverviewBinding
-import com.example.android.marsrealestate.databinding.GridViewItemBinding
+import com.example.android.marsrealestate.network.RentOrBuyTypeFilter
 
 
 class OverviewFragment : Fragment() {
@@ -42,21 +41,19 @@ class OverviewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOverviewBinding.inflate(inflater)
-
         binding.lifecycleOwner = this
-
         binding.viewModel = viewModel
 
         binding.recyclerView.adapter = PhotoGridAdapter { marsProperty ->
             viewModel.displayPropertyDetails(marsProperty)
         }
+
         viewModel.navigateToSelectedProperty.observe(this, Observer {
             if (it != null) {
                 this.findNavController().navigate(OverviewFragmentDirections.actionShowDetail(it))
                 viewModel.doneNavigating()
             }
         })
-        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -64,6 +61,17 @@ class OverviewFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.overflow_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.updateFilter(
+            when (item.itemId) {
+                R.id.show_rent_menu -> RentOrBuyTypeFilter.RENT
+                R.id.show_buy_menu -> RentOrBuyTypeFilter.BUY
+                else -> RentOrBuyTypeFilter.ALL
+            }
+        )
+        return true
     }
 
     override fun onDestroyView() {
